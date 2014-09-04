@@ -1,4 +1,4 @@
-package it.polimi.inginf.middleware.firstJob.mapper;
+package it.polimi.inginf.middleware.mapper;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -10,16 +10,18 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class FirstMapper extends Mapper<LongWritable, Text, FirstMapperCompositeKey, FirstMapperValue> {
+public class PowerMonitorMapper extends Mapper<LongWritable, Text, MapperKey, MapperValue> {
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		String line = value.toString();
 		String[] parts = line.split(",");
 		
-		int id = Integer.parseInt(parts[0]);
+		if(parts.length < 6) {
+			return;
+		}
+		
 		long timestamp = Long.parseLong(parts[1]);
 		int idPlug = Integer.parseInt(parts[2]);
-		int idHousehold = Integer.parseInt(parts[3]);
 		int idHouse = Integer.parseInt(parts[4]);
 		int measure = Integer.parseInt(parts[5]);
 		Date date = new Date(timestamp * 1000);
@@ -28,6 +30,6 @@ public class FirstMapper extends Mapper<LongWritable, Text, FirstMapperComposite
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		int hour = Integer.parseInt(df.format(date));
 		//System.out.println(hour);
-		context.write(new FirstMapperCompositeKey(idHouse, hour, measure), new FirstMapperValue(id, idPlug, idHousehold, measure));
+		context.write(new MapperKey(idHouse, hour), new MapperValue(idPlug, measure));
 	}
 }
