@@ -12,7 +12,10 @@ public class MapperKey implements WritableComparable<MapperKey>{
 	private IntWritable idHouse;
 	private LongWritable hour;
 	
-	public MapperKey() {}
+	public MapperKey() {
+		this.idHouse = new IntWritable();
+		this.hour = new LongWritable();
+	}
 	
 	public MapperKey(int idHouse, long hour) {
 		this.idHouse = new IntWritable(idHouse);

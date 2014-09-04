@@ -12,7 +12,10 @@ public class MapperValue implements WritableComparable<MapperValue> {
 	private IntWritable idPlug;
 	private LongWritable measure;
 	
-	public MapperValue() {}
+	public MapperValue() {
+		this.idPlug = new IntWritable();
+		this.measure = new LongWritable();
+	}
 	
 	public MapperValue(MapperValue other) {
 		this();

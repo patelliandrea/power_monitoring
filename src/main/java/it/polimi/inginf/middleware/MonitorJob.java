@@ -30,19 +30,20 @@ public class MonitorJob extends Configured implements Tool{
 		}
 		System.out.println("Start Run");
 
-		Path pt = new Path(args[0]);
-		FileSystem fs = FileSystem.get(new Configuration());
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				fs.open(pt)));
-		String line;
-		line = br.readLine();
-		System.out.println(line);
-		Configuration jobConf = getConf();
-		jobConf.set("time", line.split(",")[1]);
+//		Path pt = new Path(args[0]);
+//		FileSystem fs = FileSystem.get(new Configuration());
+//		BufferedReader br = new BufferedReader(new InputStreamReader(
+//				fs.open(pt)));
+//		String line;
+//		line = br.readLine();
+//		System.out.println(line);
+//		Configuration jobConf = getConf();
+//		jobConf.set("time", line.split(",")[1]);
+//
+//		@SuppressWarnings("deprecation")
+//		Job job = new Job(jobConf, "Median Load");
 
-		@SuppressWarnings("deprecation")
-		Job job = new Job(jobConf, "Median Load");
-
+		Job job = new Job(getConf(), "Median load");
 		job.setJarByClass(getClass());
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));

@@ -52,7 +52,7 @@ public class PowerMonitorReducer extends Reducer<MapperKey, MapperValue, MapperK
 		int size = values.size();
 		Collections.sort(values);
 		if(size % 2 == 0) {
-			return (values.get(size / 2 - 1) + values.get(size / 2 + 1)) / 2;
+			return values.get(size / 2 - 1);
 		} else {
 			return values.get(size / 2);
 		}
