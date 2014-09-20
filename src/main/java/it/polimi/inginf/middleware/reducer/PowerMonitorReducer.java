@@ -18,31 +18,40 @@ public class PowerMonitorReducer extends Reducer<MapperKey, MapperValue, MapperK
 	@Override
 	protected void reduce(MapperKey key, Iterable<MapperValue> values, Context context) throws IOException, InterruptedException {
 		
+		// all { idPlug, measure } of { idHouse, hour } to compute median value
 		List<Long> valueList = new ArrayList<Long>();
+		
+		// map for mapping { idPlug }, { measure } in order to compute median of the plug in the hour
 		Map<Integer, List<Long>> plugMeasures = new HashMap<Integer, List<Long>>();
 		
 		for(MapperValue value : values) {
+			// add all measures in the valueList
 			valueList.add(value.getMeasure().get());
 			
 			Integer idPlug = new Integer(value.getIdPlug().get());
 			Long measure = value.getMeasure().get();
 			
-			if(plugMeasures.containsKey(idPlug)) {
-				plugMeasures.get(idPlug).add(measure);
+			if(plugMeasures.containsKey(idPlug)) {	// if idPlug is already key of the map
+				plugMeasures.get(idPlug).add(measure);	// add the measure to the corresponding measure list
 			} else {
-				plugMeasures.put(idPlug, new ArrayList<Long>(Arrays.asList(measure)));
+				plugMeasures.put(idPlug, new ArrayList<Long>(Arrays.asList(measure))); // else put idPlug in the map and create the measure list
 			}
 		}
 		
+		// counter of the plugs with median value greater than the median of the house
 		int greaterCount = 0;
+		// compute the median of the house
 		Long medianHouse = median(valueList);
 		
+		// for each plug in the map keySet
 		for(Integer idPlug : plugMeasures.keySet()) {
+			// compute median of the plug and check if it is greater than the median of the house
 			if(median(plugMeasures.get(idPlug)) > medianHouse) {
 				greaterCount++;
 			}
 		}
 		
+		// percentage of plugs with median greater of the median of the house
 		int percentage = greaterCount * 100 / plugMeasures.keySet().size();
 		
 		context.write(key, new FloatWritable(percentage));
