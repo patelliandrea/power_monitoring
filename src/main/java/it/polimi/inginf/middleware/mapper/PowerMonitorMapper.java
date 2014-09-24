@@ -28,7 +28,7 @@ public class PowerMonitorMapper extends Mapper<LongWritable, Text, MapperKey, Ma
 		//DateFormat df = new SimpleDateFormat("hh");
 		//df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		//int hour = Integer.parseInt(df.format(date));
-		long hour = (int) (timestamp/3600);
+		long hour = timestamp/3600;
 		// map as { idHouse, hour }, { idPlug, measure }
 		context.write(new MapperKey(idHouse, hour), new MapperValue(idPlug, measure));
 	}
